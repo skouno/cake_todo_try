@@ -25,7 +25,28 @@ class TasksController extends AppController {
         $this->Task->saveField('status',1);
         $msg = sprintf('タスク %s を完了しました。',$id);
 
-        //メッセージを表示してリダイレクト
-        $this->flash($msg,'/Tasks/index');
+        //リダイレクトしてメッセージを表示
+        $this->Session->setFlash($msg);
+        $this->redirect('/Tasks/index');
+    }
+
+    public function create() {
+        // POSTされた場合だけ処理を行う
+        if ($this->request->is('post')) {
+            $data = array(
+                'name' => $this->request->data['name']
+            );
+
+            // データを登録
+            $id = $this->Task->save($data);
+            $msg = sprintf('タスク %s を登録しました。',$this->Task->id);
+
+            // リダイレクトしてメッセージを表示
+            $this->Session->setFlash($msg);
+            $this->redirect('/Tasks/index');
+            return;
+        }
+
+        $this->render('create');
     }
 }
