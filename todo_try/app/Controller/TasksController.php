@@ -34,16 +34,20 @@ class TasksController extends AppController {
         // POSTされた場合だけ処理を行う
         if ($this->request->is('post')) {
             $data = array(
-                'name' => $this->request->data['name']
+                'name' => $this->request->data['name'],
+                'body' => $this->request->data['body'],
             );
 
             // データを登録
             $id = $this->Task->save($data);
+            if ($id === false) {
+                $this->render('create');
+                return;
+            }
             $msg = sprintf('タスク %s を登録しました。',$this->Task->id);
 
             // リダイレクトしてメッセージを表示
-            $this->Session->setFlash($msg);
-            $this->redirect('/Tasks/index');
+            $this->flash($msg,'/Tasks/index');
             return;
         }
 
